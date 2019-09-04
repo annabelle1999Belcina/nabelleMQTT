@@ -14,7 +14,7 @@ var btnPublish = $("#publish-btn")
 $('#btn-connect').on('click', function () {
   // connect
   console.log("connect button clicked..")
-  client = mqtt.connect("ws://broker.hivemq.com:8000/mqtt")
+  client = mqtt.connect("wss://test.mosquitto.org:8081/mqtt")
   $("#status").text("Connecting....")
   $("#status").css("color", "yellow")
   $("#status").css("font-style", "italic")
@@ -38,6 +38,7 @@ $('#btn-connect').on('click', function () {
   })//end disconnect
 
   //Publish 
+  
   $("#btn-pub").click(function () {
     var topic = $("#topic").val();
     var message = $("#message").val();
@@ -47,6 +48,7 @@ $('#btn-connect').on('click', function () {
         title: 'All Input is Required',
       })
     } else {
+      console.log("Published Topic: "+topic+ " Message: " + message)
       client.publish(topic, message);
       Swal.fire({
         type: 'success',
@@ -64,6 +66,7 @@ $('#btn-connect').on('click', function () {
         title: 'Topic is Required',
       })
     } else {
+      console.log("Subcribed Topic: "+topsub)
       client.subscribe(topsub);
       Swal.fire({
         type: 'success',
@@ -90,16 +93,14 @@ $('#btn-connect').on('click', function () {
   })//end unsubscribe
   //Message
   client.on("message", function (topic, payload) {
+    console.log("Recieved Topic: "+topic+"Payload: "+payload)
     var row = $("<tr>")
     $("<td>").text(topic).appendTo($(row))
     $("<td>").text(payload).appendTo($(row))
     $("<td>").text(moment().format('MMMM Do YYYY, h:mm:ss a')).appendTo($(row))
     $("tbody").append($(row))
     // console.log([topic, payload].join(": "));
-
-
   })
-
 })//end of click
 
 
